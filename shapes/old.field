@@ -1,0 +1,237 @@
+#
+#
+import numpy as np
+#
+#
+#class Field(shape.Shape) :
+class Field() :
+
+    """
+    class associated to a "field" data
+    """
+
+    def __init__(self,
+                 run,
+                 data,
+                 plane,
+                 cut,
+                 time,
+                 domain = None,
+                 direction = None,
+                 shifts = [0, 0]) :
+
+        """
+        constructor of the field object
+        """
+
+        # ..... private members
+        self._run = run
+
+        # ..... public members
+        self.xdata = None
+        self.ydata = None
+        self.zdata = None
+
+        # .. the index for the 2d cut
+        if plane is not None :
+          if run.ndim == 1 :
+            raise NotImplementedError("what the fuck you want a 2D plot from a 1D run !")
+
+          elif run.ndim == 2 :
+            self._plane = "xy"
+            self._cut = None
+
+          elif run.ndim == 3 :
+            self._plane = plane.lower()
+            if (self._plane in ["xy", "yx"]) :
+              self._cut = np.rint(cut/self._run.dl[2])
+            elif (self._plane in ["xz", "zx"]) :
+              self._cut = np.rint(cut/self._run.dl[1])
+            elif (self._plane in ["yz", "zy"]) :
+             self._cut = np.rint(cut/self._run.dl[0])
+            else :
+              raise ValueError( "what the fuck is this plane ?" )
+
+          else :
+            raise ValueError( "what the fuck is the dim of your run ?" )
+        else :
+          self._plane = None
+
+        # .. the indexes for the 1d cut
+        if direction is not None :
+          if run.ndim == 1 :
+            self._direction = "x"
+
+          elif run.ndim == 2 :
+              self._direction = direction.lower()
+              if self._direction == "x" :
+                self._cut = np.rint(cut/self._run.dl[1])
+              elif self._direction == "y" :
+                self._cut = np.rint(cut/self._run.dl[0])
+              else :
+                raise ValueError( "what the fuck is the direction you want to deal with ?" )
+
+          elif run.ndim == 3 :
+              self._direction = direction.lower()
+              if self._direction == "x" :
+                self._cut = [np.rint(cut[0]/self._run.dl[1]),
+                             np.rint(cut[1]/self._run.dl[2])]
+              elif self._direction == "y" :
+                self._cut = [np.rint(cut[0]/self._run.dl[0]),
+                             np.rint(cut[1]/self._run.dl[2])]
+              elif self._direction == "z" :
+                self._cut = [np.rint(cut[0]/self._run.dl[0]),
+                             np.rint(cut[1]/self._run.dl[1])]
+              else :
+                raise ValueError( "what the fuck is the direction you want to deal with ?" )
+
+          else :
+            raise ValueError( "what the fuck is the dim of your run ?" )
+        else :
+          self._direction = None
+
+        # .. set the extent of the domain to plot
+        self._domain = domain
+
+        # .. set the time of the fig
+        self._time = time
+
+        # .. set the shifts for x & y axis
+        if shifts is None :
+          self._shifts = [0, 0]
+        else :
+          self._shifts = shifts
+
+        # .. get a 1d field with the right shape
+        if self._direction is not None :
+          self.Shape1D(data)
+          self.Make1DLabels()
+
+
+        # .. get a 2d field with the right shape
+        if self._plane is not None :
+          self.Shape2D(data)
+          self.Make2DLabels()
+
+        # .. set domain if not imposed
+        if self._domain == None :
+          self._domain = [[np.min(self.xdata),
+                           np.max(self.xdata)],
+                          [np.min(self.ydata),
+                           np.max(self.ydata)]]
+        else :
+          self._domain = [[self._domain[0][0]+self._shifts[0],
+                           self._domain[0][1]+self._shifts[0]],
+                          [self._domain[1][0]+self._shifts[1],
+                           self._domain[1][1]+self._shifts[1]]]
+
+
+    def Shape2D(self, rawdata):
+
+        """
+        reshape "field" data in "plane" sliced at "cut" on "domain" @ "time"
+        """
+
+        # .. set xdata, ydata & zdata
+        if self._plane == "xy" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[0],
+                                   self._run.ncells[0]+1)
+          self.ydata = np.linspace(self._shifts[1],
+                                   self._shifts[1]+self._run.domsize[1],
+                                   self._run.ncells[1]+1)
+          if self._run.ndim == 2 :
+            self.zdata = rawdata
+          elif self._run.ndim == 3 :
+            self.zdata = rawdata[:, :, self._cut]
+          else :
+            raise ValueError( "what the fuck is the dimension of this run ?" )
+
+        elif self._plane == "xz" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[0],
+                                   self._run.ncells[0]+1)
+          self.ydata = np.linspace(self._shifts[1],
+                                   self._shifts[1]+self._run.domsize[2],
+                                   self._run.ncells[2]+1)
+          self.zdata = rawdata[:, self._cut, :]
+
+        elif self._plane == "yz" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[1],
+                                   self._run.ncells[1]+1)
+          self.ydata = np.linspace(self._shifts[1],
+                                   self._shifts[1]+self._run.domsize[2],
+                                   self._run.ncells[2]+1)
+          self.zdata = rawdata[self._cut, :, :]
+
+        else :
+          raise ValueError( "what the fuck is this plane ?" )
+
+
+    def Shape1D(self, rawdata) :
+
+        """
+        reshape "field" in "direction" sliced at "cut" on "domain" @ "time"
+        """
+
+        # .. set xdata & ydata
+        if self._direction == "x" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[0],
+                                   self._run.ncells[0]+1)
+          self.ydata = rawdata[:, self._cut[0], self._cut[1]]
+
+        elif self._direction == "y" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[1],
+                                   self._run.ncells[1]+1)
+          self.ydata = rawdata[self._cut[0], :, self._cut[1]]
+
+        elif self._direction == "z" :
+          self.xdata = np.linspace(self._shifts[0],
+                                   self._shifts[0]+self._run.domsize[2],
+                                   self._run.ncells[2]+1)
+          self.ydata = rawdata[self._cut[0], self._cut[1], :]
+
+        else :
+          raise ValueError( "what the fuck is this direction ?" )
+
+
+    def Make2DLabels(self) :
+
+        """
+
+        """
+
+        if self._plane == "xy" :
+            self.xlabel = r'$x \, \Omega_p/c$'
+            self.ylabel = r'$y \, \Omega_p/c$'
+
+        if self._plane == "xz" :
+            self.xlabel = r'$x \, \Omega_p/c$'
+            self.ylabel = r'$z \, \Omega_p/c$'
+
+        if self._plane == "yz" :
+            self.xlabel = r'$y \, \Omega_p/c$'
+            self.ylabel = r'$z \, \Omega_p/c$'
+
+
+    def Make1DLabels(self) :
+
+        """
+
+        """
+
+        if self._direction == "x" :
+            self.xlabel = r'$x \, \Omega_p/c$'
+            #self.ylabel = r'$ $'
+
+        if self._direction == "y" :
+            self.xlabel = r'$y \, \Omega_p/c$'
+            #self.ylabel = r'$ $'
+
+        if self._direction == "z" :
+            self.xlabel = r'$z \, \Omega_p/c$'
+            #self.ylabel = r'$ $'
+

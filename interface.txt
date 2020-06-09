@@ -1,0 +1,17 @@
+
+
+those are the methods expected from an object RUN for the pypic module
+
+- GetE
+- GetN (species=)
+- GetCharge(species=)
+- GetV(species=)
+- GetB()
+- :x
+
+
+
+functions that take a 'run' object
+
+ - momentum
+ - 

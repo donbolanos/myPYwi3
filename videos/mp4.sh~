@@ -1,0 +1,71 @@
+#!/bin/bash
+
+#### Initialisation des parametres ####
+
+nbloop=80
+qual=100
+dens=300
+res=600
+
+#### Affichage ecran du recapitulatif ####
+
+echo "# images : $(($nbloop+1))"
+echo "quality  : $qual"
+echo "density  : $dens"
+echo "resize   : $res"
+
+#### Effacement du fichier erreurs précédent ####
+
+if [ -f err.log ]; then
+rm -rf ./err.log
+fi
+
+#### Debut boucle FOR ####
+
+for ((i = 0; i <= $nbloop; i++))
+do
+
+#### Creation du nom sur 3 digits ####
+
+filename=`echo $i|awk '{printf "%03d", $1}'`
+
+#### Conversion eps -> jpg avec redirection des erreurs sur err.log ####
+
+convert -quality $qual -density $dens -resize $res ${filename}.eps ${filename}.jpg 2>>err.log
+
+#### Jauge de progression : o si OK et x si erreur ####
+
+if [ -s ${filename}.jpg ]; then
+printf o
+else
+printf x
+fi
+
+done
+
+#### Fin boucle FOR ####
+
+printf "\n"
+echo "this is the end... my only friend, the end"
+
+#### Si err.log existe et a une taille >0 on ####
+#### affiche son contenu et on sort avec le code 1 ####
+#### sinon on sort avec 0 ####
+
+if [ -s err.log ]; then
+echo "oops... some errors occured :"
+cat err.log
+exit 1
+else
+exit 0
+fi
+
+### fabriquer le film ###
+
+#ffmpeg -r 10 -b 18000k -i %03d.jpg film.mp4
+avconv -r 10 -b 18000k -i %03d.jpg film.mp4
+
+### nettoie le repertoire ###
+
+\rm -r *.eps
+\rm -r *.jpg

@@ -1,0 +1,72 @@
+#
+#
+import sys
+import numpy as np
+#
+# .. add the path ---> from Roch
+#sys.path.append("/home/roch/code/mypywi/runs")
+#sys.path.append("/home/roch/code/mypywi/shapes")
+#sys.path.append("/home/roch/code/mypywi/draws")
+#
+# .. import the modulus
+import runs.heckle  as heckle
+import shapes.field as field
+import draws.colp   as colp
+#
+#
+# .. load the run
+path = '/media/sbolanos/BatDRIVE/HECKLE/400x600_ths/new0_28-42/'#'/media/sbolanos/TOURO/HECKLE/270x540_ths/t_8-38/'
+name = 'mapEB'
+run  = heckle.Heckle(path, name)
+#
+# .. get the desired data giving time
+time = 30.00
+
+bz   = run.GetB(time)[...,2]
+by   = run.GetB(time)[...,1]
+bx   = run.GetB(time)[...,0]
+
+ez   = run.GetE(time)[...,2]
+ey   = run.GetE(time)[...,1]
+ex   = run.GetE(time)[...,0]
+
+x    = run.GetCoords(axis=0)
+y    = run.GetCoords(axis=1)
+#...initialisation plasma
+n0   = 5.0e25 # electronic density
+b0   = 200    # Tesla
+
+# constant :
+mu   = 4*np.pi*1.0e-7
+kb   = 1.38e-23
+mp   = 1.67e-27
+qe   = 1.6e-19
+
+va   = b0/np.sqrt(mu*n0*mp)  # alfven velocity
+dp   = np.sqrt(mp/(mu*n0*qe*qe))  # inertial length
+tc   = mp/(qe*b0)            # gyroperiod
+
+Bz   = bz*b0   
+By   = by*b0   
+Bx   = bx*b0   
+ 
+Ez   = ez*va*b0   
+Ey   = ey*va*b0   
+Ex   = ex*va*b0   
+ 
+X    = x*dp    
+Y    = y*dp
+t 	 = time*tc
+
+filename = name + '_t_' + str(t*1.0e9) + 'ns.txt'
+fname    = path + filename
+with open(fname,'w+') as f :
+	
+	#header :
+	header = '#x	y	Bx	By	Bz	Ex	Ey	Ez\n'
+	f.write(header)
+
+	for i, valX in enumerate(X):
+		for j, valY in enumerate(Y):
+			tmp = '{:1.4e}	{:1.4e}	{:1.4e}	{:1.4e}	{:1.4e}	{:1.4e}	{:1.4e}	{:1.4e}\n'.format(valX,valY,Bx[i,j],By[i,j],Bz[i,j],Ex[i,j],Ey[i,j],Ez[i,j]) 
+			f.write(tmp)

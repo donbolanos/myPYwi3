@@ -1,0 +1,334 @@
+#
+#
+import sys
+import os
+#
+# .. add the path ---> from Roch
+#sys.path.append("/home/roch/code/mypywi/runs")
+#sys.path.append("/home/roch/code/mypywi/shapes")
+#sys.path.append("/home/roch/code/mypywi/draws")
+#
+# .. import the modulus
+import runs.heckle  as heckle
+import shapes.field as field
+import draws.colp   as colp
+#
+#
+# .. load the run
+path = '/media/sbolanos/BatDRIVE/HECKLE/400x600_ths/new30_0-11/'#'/media/sbolanos/BatDRIVE/HECKLE/400x600_ths/new0_28-42/'
+name = '400x600'
+run  = heckle.Heckle(path, name)
+#
+# .. get the desired data giving time
+time = 5.00
+
+dataN = run.GetN(time, "p")
+dataNe= run.GetN(time,"e")
+# B : magnetic
+dataBx = run.GetB(time)[...,0]
+dataBy = run.GetB(time)[...,1]
+dataBz = run.GetB(time)[...,2]
+# E : electric
+dataEx = run.GetE(time)[...,0]
+dataEy = run.GetE(time)[...,1]
+dataEz = run.GetE(time)[...,2]
+# J : Current 
+dataJx = run.GetJ(time)[...,0]
+dataJy = run.GetJ(time)[...,1]
+dataJz = run.GetJ(time)[...,2]
+
+dutu = run.fourierFlux(time)
+
+#
+# .. set the needed parameter to plot the 2d field
+domain    = None
+shifts    = [0, 0]
+bounds    = None
+colormap  = ['jet', 64]
+flines    = 10
+ticks     = [20, 20]
+subticks  = [2, 2]
+figsize   = [6, 9]
+filetype  = 'pdf'
+filename   = name+'_t_'+str(time)
+filenameN  = 'density_'+name+'_t_'+str(time)
+filenameNe = 'densityelec_'+name+'_t_'+str(time)
+filenameBx = 'bx_'+name+'_t_'+str(time)
+filenameBy = 'by_'+name+'_t_'+str(time)
+filenameBz = 'bz_'+name+'_t_'+str(time)
+filenameEx = 'ex_'+name+'_t_'+str(time)
+filenameEy = 'ey_'+name+'_t_'+str(time)
+filenameEz = 'ez_'+name+'_t_'+str(time)
+filenameJx = 'jx_'+name+'_t_'+str(time)
+filenameJy = 'jy_'+name+'_t_'+str(time)
+filenameJz = 'jz_'+name+'_t_'+str(time)
+#
+normal = {'b0': 1.0e-8, 'n0': 2} # for hedp : b0 in megaGauss & n0 in cm-3
+#
+if filetype is not None:
+  os.mkdir(path+filename)
+  os.chdir(path+filename)
+
+# .. load the data for image
+imN = field.Field(run = run,
+                  data = dataN,
+                  domain = domain,
+                  shifts = shifts)
+
+#
+imNe = field.Field(run = run,
+                  data = dataNe,
+                  domain = domain,
+                  shifts = shifts)
+
+#
+imBx = field.Field(run = run,
+                  data = dataBx,
+                  domain = domain,
+                  shifts = shifts)
+#
+imBy = field.Field(run = run,
+                  data = dataBy,
+                  domain = domain,
+                  shifts = shifts)
+#
+imBy = field.Field(run = run,
+                  data = dataBy,
+                  domain = domain,
+                  shifts = shifts)
+#
+imBz = field.Field(run = run,
+                  data = dataBz,
+                  domain = domain,
+                  shifts = shifts)
+#
+imEx = field.Field(run = run,
+                  data = dataEx,
+                  domain = domain,
+                  shifts = shifts)
+#
+imEy = field.Field(run = run,
+                  data = dataEy,
+                  domain = domain,
+                  shifts = shifts)
+#
+imEz = field.Field(run = run,
+                  data = dataEz,
+                  domain = domain,
+                  shifts = shifts)
+#
+imJx = field.Field(run = run,
+                  data = dataJx,
+                  domain = domain,
+                  shifts = shifts)
+#
+imJy = field.Field(run = run,
+                  data = dataJy,
+                  domain = domain,
+                  shifts = shifts)
+#
+imJz = field.Field(run = run,
+                  data = dataJz,
+                  domain = domain,
+                  shifts = shifts)
+#
+#
+# .. load the data for contours
+im1 = field.Field(run = run,
+                  data = dutu,
+                  domain = domain,
+                  shifts = shifts)
+
+# .. draw the plot
+plo = colp.Colp(coloraxis = imN.axis,
+                colordata = imN.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameN)
+
+ploNe = colp.Colp(coloraxis = imNe.axis,
+                colordata = imNe.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameNe)
+
+ploBx = colp.Colp(coloraxis = imBx.axis,
+                colordata = imBx.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameBx)
+
+ploBy = colp.Colp(coloraxis = imBy.axis,
+                colordata = imBy.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameBy)
+
+ploBy = colp.Colp(coloraxis = imBy.axis,
+                colordata = imBy.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameBy)
+
+ploBz = colp.Colp(coloraxis = imBz.axis,
+                colordata = imBz.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameBz)
+
+ploEx = colp.Colp(coloraxis = imEx.axis,
+                colordata = imEx.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameEx)
+
+ploEy = colp.Colp(coloraxis = imEy.axis,
+                colordata = imEy.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameEy)
+
+ploEz = colp.Colp(coloraxis = imEz.axis,
+                colordata = imEz.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameEz)
+
+ploJx = colp.Colp(coloraxis = imJx.axis,
+                colordata = imJx.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameJx)
+
+ploJy = colp.Colp(coloraxis = imJy.axis,
+                colordata = imJy.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameJy)
+
+ploJz = colp.Colp(coloraxis = imJz.axis,
+                colordata = imJz.data,
+                bounds = bounds,
+                colormap = colormap,
+                contouraxis = im1.axis,
+                contourdata = im1.data,
+                flines = flines,
+                arrowaxis = None,
+                arrowdata = None,
+                labels = imN.labels,
+                ticks = ticks,
+                subticks = subticks,
+                figsize = figsize,
+                filetype = filetype,
+                filename = filenameJz)
+#
