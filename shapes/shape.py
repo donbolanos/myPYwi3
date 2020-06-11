@@ -132,7 +132,7 @@ class Shape(object):
          obj.append(mySlice)
          self.axis[i] = self.axis[i][mySlice]
 
-      self.data = data[obj]
+      self.data = data[tuple(obj)]
 
 
 

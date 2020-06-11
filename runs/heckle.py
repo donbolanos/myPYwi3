@@ -7,7 +7,7 @@
 
 
 
-import run
+from . import run
 import h5py
 import os
 import numpy as np
@@ -97,7 +97,7 @@ class Heckle(run.Run):
         Creation : 2015-02-27 19:12:14.062301
         """
 
-        f = h5py.File(os.path.join(self.path, self._fieldfilename))
+        f = h5py.File(os.path.join(self.path, self._fieldfilename),'r')
         attribute = f.attrs[attributeName]
         f.close()
 
@@ -118,7 +118,7 @@ class Heckle(run.Run):
         Creation : 2018-05-28 
         """
 
-        f = h5py.File(os.path.join(self.path, self._speciefilename))
+        f = h5py.File(os.path.join(self.path, self._speciefilename),'r')
         attribute = f.attrs[attributeName]
         f.close()
 
@@ -140,7 +140,7 @@ class Heckle(run.Run):
         return a list with the times, and a list with the associated groups
         """
 
-        f = h5py.File(os.path.join(self.path, self._fieldfilename))
+        f = h5py.File(os.path.join(self.path, self._fieldfilename),'r')
 
         # build the list of all time recorded in fields.h5
         groups = f.keys()
@@ -176,7 +176,7 @@ class Heckle(run.Run):
         return a list with the times, and a list with the associated groups
         """
 
-        f = h5py.File(os.path.join(self.path, file))
+        f = h5py.File(os.path.join(self.path, file),'r')
 
         # build the list of all time recorded in fields.h5
         groups = f.keys()
@@ -216,9 +216,9 @@ class Heckle(run.Run):
 
         mytimes, mygroups = self.getTimeGroups([time])
 
-        f = h5py.File(os.path.join(self.path, self._fieldfilename))
+        f = h5py.File(os.path.join(self.path, self._fieldfilename),'r')
 
-        data = f[mygroups+'/'+fieldname].value
+        data = f[mygroups+'/'+fieldname][()]
 
         f.close()
 
@@ -254,9 +254,9 @@ class Heckle(run.Run):
 
         mytimes, mygroups = self.getTime([time],self._speciefilename)
 
-        f = h5py.File(os.path.join(self.path, self._speciefilename))
+        f = h5py.File(os.path.join(self.path, self._speciefilename),'r')
 
-        data = f[mygroups+'/'+species+'/'+fieldname].value
+        data = f[mygroups+'/'+species+'/'+fieldname][()]
 
         f.close()
         
@@ -1019,15 +1019,15 @@ class Heckle(run.Run):
        axis = 0
        N = dim[axis]
        k = np.linspace(0, N-1, N)
-       kplus = k[:N/2+1]
-       kminus =-k[(N-1)/2:0:-1]
+       kplus = k[:int(N/2)+1]
+       kminus =-k[int((N-1)/2):0:-1]
        kx = np.concatenate((kplus, kminus))*2*np.pi/self.domsize[axis]
 
        axis = 1
        N = dim[axis]
        k = np.linspace(0, N-1, N)
-       kplus = k[:N/2+1]
-       kminus =-k[(N-1)/2:0:-1]
+       kplus = k[:int(N/2)+1]
+       kminus =-k[int((N-1)/2):0:-1]
        ky = np.concatenate((kplus, kminus))*2*np.pi/self.domsize[axis]
 
        # create 2d values to avoid nested "for" loops

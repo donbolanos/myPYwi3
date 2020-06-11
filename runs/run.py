@@ -122,9 +122,9 @@ class Run (object):
         Shows some information on screen about the run, like its path, 
         its ID, and the name of the physical model.
         """
-        print 'Model name       : %s '  % (self.modelname)
-        print 'Run ID           : %s'   % (self.runID)
-        print 'Path             : %s'   % (self.path)
+        print( 'Model name       : %s '  % (self.modelname))
+        print( 'Run ID           : %s'   % (self.runID)    )
+        print( 'Path             : %s'   % (self.path)     )
     #==========================================================
 
 

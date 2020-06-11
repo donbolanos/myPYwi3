@@ -1,6 +1,6 @@
 
 import numpy as np
-import shape
+from . import shape
 
 
 class Field(shape.Shape):
