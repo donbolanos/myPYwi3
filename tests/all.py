@@ -18,7 +18,7 @@ import draws.colp   as colp
 # .. load the run
 #path = '/media/sbolanos/DATA/init_hkl/'
 #path = '/media/sbolanos/BatDRIVE/HECKLE/TEST/store/las_CU_L18_gf_n10/'
-path = '/media/sbolanos/BatDRIVE/HECKLE/laser/las_OR_plan/'
+path = '/media/sbolanos/BatDRIVE/HECKLE/laser/las_Al_plan/'
 #path = '/media/sbolanos/BatDRIVE/HECKLE/400x600_te/T10/400x600_vA_T10_t0-18/'
 #path = '/media/sbolanos/BatDRIVE/HECKLE/PRO/T10/400x600_T10/'
 #path = '/media/sbolanos/BatDRIVE/HECKLE/TEST/store/CU_D48_L16_r1/'
@@ -27,7 +27,7 @@ name =  'py3'
 run  = heckle.Heckle(path, name)
 #
 # .. get the desired data giving time
-time = 90.0
+time = 0.0
 
 dataN = run.GetN(time,"p")
 dataNe= run.GetN(time,"e")

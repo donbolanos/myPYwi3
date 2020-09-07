@@ -18,8 +18,8 @@ import shapes.field as field
 import draws.colp   as colp
 #
 # .. load the run
-path = '/media/sbolanos/BatDRIVE/HECKLE/TEST/store/'#'/media/sbolanos/TOURO/HECKLE/270x540_ths/t_8-38/'
-name = 'las_CU_L18_gf_n10_ts+'
+path = '/media/sbolanos/BatDRIVE/HECKLE/laser/'#'/media/sbolanos/TOURO/HECKLE/270x540_ths/t_8-38/'
+name = 'las_OR_plan'
 savepath = path+name+'/bz_video/'
 
 try : 
@@ -37,7 +37,7 @@ domain    = None
 shifts    = [0, 0]
 bounds    = [-0.5,0.5]
 colormap  = ['bwr', 64]
-flines    = - np.arange(0.,150.,2.0)[::-1]
+flines    = - np.arange(0.,1000.,2.0)[::-1]
 ticks     = [20, 20]
 subticks  = [2, 2]
 figsize   = None #[6,9]
@@ -51,7 +51,7 @@ for folder in liste :
     #
     # .. get the desired data giving time
     #data = run.GetN(time, "a")
-    goodtime,grouptime = run.getTimeGroups([0,153.0])
+    goodtime,grouptime = run.getTimeGroups([0,100.0])
     for time in goodtime :
       #dutu = run.fourierFlux(time)
       #data = run.GetJ(time)[...,1]

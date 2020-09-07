@@ -11,7 +11,7 @@ sys.path.append("/home/sbolanos/Documents/code/Python/")
 import runs.heckle  as heckle
 
 #.. use latex fonts
-rc('text',usetex = True)
+rc('text',usetex = False)
 rc('font',size = 16,family ='sans-serif')
 rc('axes', labelsize = 'larger')
 rc('mathtext',default = 'regular')
@@ -21,11 +21,11 @@ titles   = ['$Initialisation$','$Onset$', '$Reconnection$', '$End\ of\ MR$']
 #ylabel   = ['T = 1\ny [mm]','T = 10\ny [mm]','T = 100\ny [mm]']
 
 time = [3.0,10.,20.,30.]
-F = plt.figure(1,(13,5))
+F = plt.figure(1,(10,3.5))
 grid = ImageGrid(F, 111,
                       nrows_ncols=(1,len(time)),
                       direction="row",
-                      axes_pad=0.12,
+                      axes_pad= 0.12,#0.85, #0.12 normalement
                       add_all=True,
                       label_mode="L",
                       share_all=True,
@@ -35,9 +35,9 @@ grid = ImageGrid(F, 111,
                       cbar_pad=0.05,
                       )
 
-path  = '/media/sbolanos/BatDRIVE/HECKLE/LMJ/nb2_T1/'
+path  = '/media/sbolanos/BatDRIVE/HECKLE/LMJ/nb3_T1/'
 name  = '400x600'
-vmaxh = 0.5
+vmaxh = 0.4
 vminh = -vmaxh
 
 #
@@ -56,7 +56,8 @@ for t in goodtime:
 		dataAz = run.fourierFlux(t)
 		
 		X = run.GetCoords(axis=0)
-		X = X - X[-1]/2
+		#X = X - X[-1]/2
+		X = X - 44.4 #with 3 NBeams
 		Y = run.GetCoords(axis=1)
 		Y = Y - Y[-1]/2
 		
@@ -87,5 +88,5 @@ for t in goodtime:
 			cb1.set_label_text('$B_{z}$')
 			
 
-
+plt.tight_layout()
 plt.show()
