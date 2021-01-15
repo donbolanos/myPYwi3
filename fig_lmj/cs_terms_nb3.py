@@ -61,7 +61,7 @@ def Bx_CS(path,name,time,x):
 				
 				return y,BX,BZ,JZ
 
-	print '/!\\ TIME NOT FIND /!\\'
+	print('/!\\ TIME NOT FIND /!\\')
 	return y,BX,BZ,JZ
 
 #.. use latex fonts
@@ -72,7 +72,7 @@ rc('mathtext',default = 'regular')
 #plt.rcParams['figure.constrained_layout.use'] = True
 
 # .. load the run
-path = '/media/sbolanos/BatDRIVE/HECKLE/LMJ/nb3_T10/'
+path = '/media/sbolanos/BatDRIVE/HECKLE/LMJ/nb2_T1/'
 name = 'laser'
 
 
@@ -88,7 +88,7 @@ run  = heckle.Heckle(path , name)
 #
 # .. get the desired data giving time
 #data = run.GetN(time, "a")
-goodtime,grouptime = run.getTimeGroups([0,23.2])
+goodtime,grouptime = run.getTimeGroups([0,40])
 vtime =  np.arange(0,np.max(goodtime),0.2)
 
 for time in vtime :
@@ -101,6 +101,7 @@ for time in vtime :
 
 		Jz  = run.GetJ(time)[...,2] 
 		Ez  = run.GetE(time)[...,2]
+		Vx  = run.GetV(time,'i')[...,0]
 		Vy  = run.GetV(time,'i')[...,1]
 
 		Bx  = run.GetB(time)[...,0]
@@ -120,9 +121,9 @@ for time in vtime :
 
 		xmax = run.GetCoords(axis = 0)[ixmax]
 		ymax = run.GetCoords(axis = 1)[iymax]
-		print 'X point position : X = ',ixmax,' and Y = ',iymax
+		print('X point position : X = ',ixmax,' and Y = ',iymax)
 	else :
-		print 'PASS'
+		print('PASS')
 		pass
 
 
@@ -139,11 +140,18 @@ for time in vtime :
 	lj   = Jz[ixmax,:]
 	vi   = Vy[ixmax,:]
 
+	lb_x = By[:,iymax]
+	gf_x = Bz[:,iymax]	
+	lj_x = Jz[:,iymax]
+	vi_x = Vx[:,iymax]
+
+
 	lb_r = Bx[ixr  ,:]
 	gf_r = Bz[ixr  ,:]	
 	lj_r = Jz[ixr  ,:]
 	vi_r = Vy[ixr  ,:]
 
+	x    = run.GetCoords(axis = 0)
 	y    = run.GetCoords(axis = 1)
 
 	# --- Plot 
@@ -155,7 +163,7 @@ for time in vtime :
 	ax3 = plt.subplot2grid((1, 2), (0, 0))
 	ax4 = plt.subplot2grid((1, 2), (0, 1))
 	
-	ax1.set_title('t = {:.1f} / X-point'.format(time))
+	ax1.set_title('t = {:.1f} / Y axis'.format(time))
 	ax1.plot( y, lb, label = 'Bx')
 	ax1.plot( y, gf, label = 'GF')
 	ax1.plot( y, lj, label = 'Jz')
@@ -164,13 +172,13 @@ for time in vtime :
 	ax1.set_xlim([40.0,80.0])
 	ax1.legend(loc='best')
 
-	ax2.set_title('t = {:.1f} / RIGHT'.format(time))
-	ax2.plot( y, lb_r, label = 'Bx')
-	ax2.plot( y, gf_r, label = 'GF')
-	ax2.plot( y, lj_r, label = 'Jz')
-	ax2.plot( y, vi_r, label = 'Vy')
+	ax2.set_title('t = {:.1f} / X axis'.format(time))
+	ax2.plot( x, lb_x, label = 'Bx')
+	ax2.plot( x, gf_x, label = 'GF')
+	ax2.plot( x, lj_x, label = 'Jz')
+	ax2.plot( x, vi_x, label = 'Vy')
 	ax2.grid()
-	ax2.set_xlim([50.0,70.0])
+	ax2.set_xlim([20.0,60.0])
 	ax2.legend(loc='best')
 
 	axis = np.array([run.GetCoords(axis = 0),run.GetCoords(axis = 1)])
@@ -212,6 +220,6 @@ for time in vtime :
 	ax4.set_xlim([0,40.0])
 	plt.tight_layout()
 
-	#savename = savepath + 'cs_t{:.1f}.png'.format(time)
-	#fig.savefig(savename)
-	plt.show()
+	savename = savepath + 'cs_t{:.1f}.png'.format(time)
+	fig.savefig(savename)
+	#plt.show()

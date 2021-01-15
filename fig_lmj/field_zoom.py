@@ -70,25 +70,25 @@ im1 = field.Field(run = run,
 
 #.. passage d'unité adimensionnée à physique 
 # constants :
-A  = 63
-Z  = 19
+A  = 1.
+Z  = 1.
 mu = 4*np.pi*1.0e-7
 kb = 1.38e-23
 mp = 1.67e-27 
 qe = 1.6e-19
 mi = A*mp 
 b0 = 200  #express in T to denormalized
-n0 = 3.3e27 #express in cm-3 to denormalized
+n0 = 0.5e26 #express in cm-3 to denormalized
   
 va = b0/np.sqrt(mu*n0*mi/Z)
 dp = np.sqrt(mi/(mu*n0*Z*qe*qe))
 tc = mi/(Z*qe*b0)
 
-#im0.axis[0] = im0.axis[0]*dp*1e3 #express in mm 
-#im0.axis[1] = im0.axis[1]*dp*1e3 #express in mm 
-#
-#im1.axis[0] = im1.axis[0]*dp*1e3 #express in mm 
-#im1.axis[1] = im1.axis[1]*dp*1e3 #express in mm 
+im0.axis[0] = im0.axis[0]*dp*1e3 #express in mm 
+im0.axis[1] = im0.axis[1]*dp*1e3 #express in mm 
+
+im1.axis[0] = im1.axis[0]*dp*1e3 #express in mm 
+im1.axis[1] = im1.axis[1]*dp*1e3 #express in mm 
 
 #SKIP THE NORMALISED
 

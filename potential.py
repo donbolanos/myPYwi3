@@ -74,4 +74,4 @@ def getEzTemp(path,timegroup,Nx,Ny,position = None, positionRef = None, returnPo
     elif returnPot == False :
         return t[:-1]+dt/2,ez
     else :
-        print 'What are you doing, motherfucker ?'
+        print('What are you doing, motherfucker ?')

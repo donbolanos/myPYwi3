@@ -15,10 +15,10 @@ import shapes.field as field
 import draws.colp   as colp
 #
 #...initialisation plasma
-n0   = 0.7e27 # electronic density         <<<<<<<<<
+n0   = 5.0e25 # electronic density         <<<<<<<<<
 b0   = 200    # Tesla                       <<<<<<<<<
-A    = 63
-Z    = 22
+A    = 1
+Z    = 1
 
 # constant :
 mu   = 4*np.pi*1.0e-7
@@ -32,9 +32,9 @@ dp   = np.sqrt(mi/(mu*n0*Z*qe*qe))  # inertial length
 tc   = mi/(Z*qe*b0)            # gyroperiod
 
 # .. load the run
-path = '/media/sbolanos/DATA/Transfert_temp/gf45_T0.1/'#'/media/sbolanos/TOURO/HECKLE/270x540_ths/t_8-38/'
+path = '/media/sbolanos/KINGSTON/nb2_T1/'
 name = 'nlasers'
-foname = 'gf'
+foname = 'lmj'
 
 #create the folder 
 path_dir = path + 'ILZ/'
@@ -53,7 +53,7 @@ except OSError :
 
 liste = os.listdir(path)
 
-tlist = np.arange(0.0,50.0,10.) 
+tlist = [3.,10.,20.,30.,40.]#np.arange(0.0,50.0,10.) 
 
 #for folder in liste :
 #
